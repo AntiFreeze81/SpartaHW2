@@ -6,6 +6,8 @@
 #include "Magician.h"
 #include "Thief.h"
 #include "Archer.h"
+#include "Monster.h"
+#include "Slime.h"
 
 using namespace std;
 
@@ -245,6 +247,7 @@ int main() {
 	cout << "선택: ";
 	cin >> choice;
 
+	//입력 받은 값으로 직업 선택
 	switch (choice) {
 	case 1:	player = new Warrior(name, stat[0], stat[1], stat[2], stat[3]); break;
 	case 2:	player = new Magician(name, stat[0], stat[1], stat[2], stat[3]); break;
@@ -252,8 +255,52 @@ int main() {
 	case 4:	player = new Archer(name, stat[0], stat[1], stat[2], stat[3]); break;
 	}
 
-	player->printPlayerStatus();
+	//전직한 직업명 출력
+	cout << "======================================================" << endl;
+	cout << player->getName() << "님이 " << player->getJob() << "(으)로 전직하셨습니다." << endl;
+	cout << "======================================================" << endl;
+
+	//기본 몬스터(슬라임) 생성
+	Monster* slime = new Slime("더러운 슬라임", 300, 200, 100, "끈적이는 젤리", 120);
+
+	//임시 몬스터 출현 출력
+	cout << "야생의 " << slime->getName() << "이 나타났다!" << endl;
+	cout << "======================================================";
+
+	//플레이어턴 판별을 위한 플래그 생성
+	bool isPlayerTurn = true;
 	
+	//전투를 위한 반복문
+	while (player->getHp() > 0 && slime->getHp() > 0) {
+		cout << endl;
+		if (isPlayerTurn) {
+			cout << "--- 플레이어 턴 ---" << endl;
+			player->attack();
+			cout << slime->getName() << "에게 " << player->getPower() - slime->getDefence() << " 데미지!" << endl;
+			cout << slime->getName() << " HP: " << slime->getHp() << " -> " << slime->getHp() + slime->getDefence() - player->getPower();
+			slime->setHp(slime->getHp() + slime->getDefence() - player->getPower());
+			isPlayerTurn = false;
+		}
+		else {
+			cout << "--- " << slime->getName() << " 턴 ---" << endl;
+			slime->attack(player);
+
+			isPlayerTurn = true;
+		}
+	}
+
+	if (player->getHp() > 0) {
+		cout << " (사망)" << endl << endl;
+		cout << "★ 전투 승리!" << endl;
+		cout << " -> 슬라임의 끈적한 젤리 획득!";
+	}
+	else {
+		cout << " (사망)" << endl << endl;
+		cout << "전투 패배..." << endl;
+		cout << slime->getName() << "과(와)의 전투에서 패배하였습니다." << endl;
+	}
+ 
+	delete slime;
 	delete player;
 
 	return 0;
