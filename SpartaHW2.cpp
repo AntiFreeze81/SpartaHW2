@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 #include <string>
+#include <algorithm>
+#include <vector>
 
 #include "Player.h"
 #include "Warrior.h"
@@ -10,6 +12,17 @@
 #include "Slime.h"
 
 using namespace std;
+
+struct Item{
+	string name;
+	int price;
+	//아이템 정보 출력용 상수 멤버 함수
+	void PrintInfo() const {
+		cout << name << " (" << price << "G)" << endl;
+	}
+};
+
+
 
 /*
 class Player { //4-1 Player클래스 생성
@@ -245,7 +258,7 @@ int main() {
 	cout << name << "님, 직업을 선택해주세요!" << endl;
 	cout << "1. 전사  2. 마법사  3. 도적  4. 궁수" << endl;
 	cout << "선택: ";
-	cin >> choice;
+	cin >> choice; //선택값 저장 변수
 
 	//입력 받은 값으로 직업 선택
 	switch (choice) {
@@ -260,47 +273,88 @@ int main() {
 	cout << player->getName() << "님이 " << player->getJob() << "(으)로 전직하셨습니다." << endl;
 	cout << "======================================================" << endl;
 
-	//기본 몬스터(슬라임) 생성
-	Monster* slime = new Slime("더러운 슬라임", 300, 200, 100, "끈적이는 젤리", 120);
+	//인벤토리 생성
+	vector<Item> inventory;
 
-	//임시 몬스터 출현 출력
-	cout << "야생의 " << slime->getName() << "이 나타났다!" << endl;
-	cout << "======================================================";
+	//게임 상태 확인 플래그
+	bool isGameOver = false;
 
-	//플레이어턴 판별을 위한 플래그 생성
-	bool isPlayerTurn = true;
-	
-	//전투를 위한 반복문
-	while (player->getHp() > 0 && slime->getHp() > 0) {
-		cout << endl;
-		if (isPlayerTurn) {
-			cout << "--- 플레이어 턴 ---" << endl;
-			player->attack();
-			cout << slime->getName() << "에게 " << player->getPower() - slime->getDefence() << " 데미지!" << endl;
-			cout << slime->getName() << " HP: " << slime->getHp() << " -> " << slime->getHp() + slime->getDefence() - player->getPower();
-			slime->setHp(slime->getHp() + slime->getDefence() - player->getPower());
-			isPlayerTurn = false;
+	//메인메뉴 생성 1.던전 2.인벤토리 0.종료
+	do {
+		cout << "=== 메인 메뉴 ===" << endl;
+		cout << "1. 던전 입장" << endl;
+		cout << "2. 인벤토리 확인" << endl;
+		cout << "0. 게임 종료" << endl << endl;
+		cout << "선택: ";
+		cin >> choice;
+
+		switch (choice) {
+		case 1:
+		{
+			//기본 몬스터(슬라임) 생성 기본값(HP 30, 공격력 20, 방어력 10)
+			Monster* slime = new Slime("더러운 슬라임", 3000, 51, 49, "끈적이는 젤리", 120);
+
+			//임시 몬스터 출현 출력
+			cout << "야생의 " << slime->getName() << "이 나타났다!" << endl;
+			cout << "======================================================";
+
+			//플레이어턴 판별을 위한 플래그 생성
+			bool isPlayerTurn = true;
+
+			//전투를 위한 반복문
+			while (player->getHp() > 0 && slime->getHp() > 0) {
+				cout << endl;
+				if (isPlayerTurn) {
+					cout << "--- 플레이어 턴 ---" << endl;
+					player->attack();
+					cout << slime->getName() << "에게 " << max(1, player->getPower() - slime->getDefence()) << " 데미지!" << endl;
+					cout << slime->getName() << " HP: " << slime->getHp() << " -> " << slime->getHp() - max(1, player->getPower() - slime->getDefence());
+					slime->setHp(slime->getHp() - max(1, player->getPower() - slime->getDefence()));
+					isPlayerTurn = false;
+				}
+				else {
+					cout << "--- " << slime->getName() << " 턴 ---" << endl;
+					slime->attack(player);
+
+					isPlayerTurn = true;
+				}
+			}
+
+			if (player->getHp() > 0) {
+				cout << " (사망)" << endl << endl;
+				cout << "★ 전투 승리!" << endl;
+				cout << " -> 슬라임의 끈적한 젤리 획득!" << endl;
+
+				Item droppedItem;
+				droppedItem.name = slime->getDropItemName();
+				droppedItem.price = slime->getDropItemPrice();
+				inventory.push_back(droppedItem);
+			}
+			else {
+				cout << " (사망)" << endl << endl;
+				cout << "전투 패배..." << endl;
+				cout << slime->getName() << "과(와)의 전투에서 패배하였습니다." << endl;
+			}
+
+
+			delete slime;
 		}
-		else {
-			cout << "--- " << slime->getName() << " 턴 ---" << endl;
-			slime->attack(player);
-
-			isPlayerTurn = true;
+			break;
+		case 2: //인벤토리 선택
+		{
+			int i = 1;
+			for (Item item : inventory) {
+				cout << i << ". ";
+				item.PrintInfo();
+			}
+			break;
 		}
-	}
+		case 0:
+			isGameOver = true;
+		}
+	} while (!isGameOver);
 
-	if (player->getHp() > 0) {
-		cout << " (사망)" << endl << endl;
-		cout << "★ 전투 승리!" << endl;
-		cout << " -> 슬라임의 끈적한 젤리 획득!";
-	}
-	else {
-		cout << " (사망)" << endl << endl;
-		cout << "전투 패배..." << endl;
-		cout << slime->getName() << "과(와)의 전투에서 패배하였습니다." << endl;
-	}
- 
-	delete slime;
+
 	delete player;
 
 	return 0;
