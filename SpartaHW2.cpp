@@ -3,7 +3,129 @@
 
 using namespace std;
 
-//1-5 printStatus 함수 작성 후 호출
+class Player { //4-1 Player클래스 생성
+protected:
+	string name;
+	string job = "None";
+	int level = 1;
+	int hp;
+	int mp;
+	int power;
+	int defence;
+
+public:
+	Player(string n, int h, int m, int p, int d) : name(n), hp(h), mp(m), power(p), defence(d) {} //4-2, 4-3
+	
+	//4-5 getter
+	string getName() {
+		return name;
+	}
+	string getJob() {
+		return job;
+	}
+	int getLevel() {
+		return level;
+	}
+	int getHp() {
+		return hp;
+	}
+	int getMp() {
+		return mp;
+	}
+	int getPower() {
+		return power;
+	}
+	int getDefence() {
+		return defence;
+	}
+
+	//4-5 setter
+	void setName(string name) {
+		this->name = name;
+	}
+	void setJob(string job) {
+		this->job = job; 
+	} 
+	void setLevel(int level) {
+		this->level = level;
+	}
+	void setHp(int hp) {
+		this->hp = hp;
+	}
+	void setMp(int mp) {
+		this->mp = mp;
+	}
+	void setPower(int power) {
+		this->power = power;
+	}
+	void setDefence(int defence) {
+		this->defence = defence;
+	}
+
+	virtual void attack() = 0; //4-6
+	
+	void printStatus() {
+		cout << "======================================================" << endl;
+		cout << "     " << name << "의 현재 능력치" << endl;
+		cout << "======================================================" << endl;
+		cout << "HP: " << hp << "     " << "MP: " << mp << endl;
+		cout << "공격력: " << power << "    " << "방어력: " << defence << endl;
+		cout << "======================================================" << endl;
+	}
+
+	virtual ~Player() {} //4-7
+};
+
+class Warrior : public Player {
+public:
+	Warrior(string n, int h, int m, int p, int d) : Player(n, h, m, p, d) {
+		hp += 30;
+		setJob("Warrior");
+	}
+
+	void attack() override {
+		cout << "파워 어택!" << endl;
+	}
+};
+
+class Magician : public Player {
+public:
+	Magician(string n, int h, int m, int p, int d) : Player(n, h, m, p, d) {
+		mp += 30;
+		setJob("Magician");
+	}
+
+	void attack() override {
+		cout << "썬더 볼트!" << endl;
+	}
+};
+
+class Thief : public Player {
+public:
+	Thief(string n, int h, int m, int p, int d) : Player(n, h, m, p, d) {
+		p += 30;
+		setJob("Thief");
+	}
+
+	void attack() override {
+		cout << "더블 슬래시!" << endl;
+	}
+};
+
+class Archer : public Player {
+	Archer(string n, int h, int m, int p, int d) : Player(n, h, m, p, d) {
+		p += 30;
+		setJob("Archer");
+	}
+
+	void attack() override {
+		cout << "화살 발사!" << endl;
+	}
+};
+
+
+//1-5 printStatus 함수 작성 후 호출, Player 클래스에 통합
+/*
 void printStatus(string name, int stat[]) {
 	cout << "======================================================" << endl;
 	cout << "     " << name << "의 현재 능력치" << endl;
@@ -12,6 +134,7 @@ void printStatus(string name, int stat[]) {
 	cout << "공격력: " << stat[2] << "    " << "방어력: " << stat[3] << endl;
 	cout << "======================================================" << endl;
 }
+*/
 
 int main() {
 	cout << "======================================================" << endl;
@@ -54,7 +177,7 @@ int main() {
 	cout << '\n';
 
 	//1-5 printStatsu 함수 작성 후 호출
-	printStatus(name, stat);
+	//printStatus(name, stat);
 
 	//3-1
 	int hpPotion = 5, mpPotion = 5;
@@ -97,9 +220,16 @@ int main() {
 			break;
 		case 3: stat[2] *= 2; break; //3-7 공격력 2배 
  		case 4: stat[3] *= 2; break; //3-8 방어력 2배
-		case 5: printStatus(name, stat); break; //3-9 현재 능력치 출력
+		//case 5: printStatus(name, stat); break; //3-9 현재 능력치 출력
 		}
 	}
 		
+	Player* player = nullptr;
+	player = new Magician(name, stat[0], stat[1], stat[2], stat[3]);
+	player->attack();
+	player->printStatus();
+	
+	delete player;
+
 	return 0;
 }
