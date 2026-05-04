@@ -55,6 +55,51 @@ int main() {
 
 	//1-5 printStatsu 함수 작성 후 호출
 	printStatus(name, stat);
+
+	//3-1
+	int hpPotion = 5, mpPotion = 5;
+	cout << "* HP포션 5개, MP 포션 5개가 기본 지급되었습니다." << endl;
+
+	cout << "======================================================" << endl;
+
+	//3-2
+	bool isGameStart = false;
+
+	//3-3
+	int choice;
+	while (!isGameStart) {
+		cout << "< 캐릭터 강화 >" << endl;
+		cout << "1. HP UP   2. MP UP   3. 공격력 2배" << endl;
+		cout << "4. 방어력 2배   5. 현재 능력치    0. 게임시작" << endl;
+		cout << "======================================================" << endl;
+		cout << "번호를 선택해주세요: ";
+		cin >> choice;
+
+		switch (choice) {
+		case 0: //3-10 게임 시작
+			cout << "게임을 시작합니다!" << endl;
+			isGameStart = true;
+			break;
+		case 1: //3-4 HP포션 사용 (20 회복) + 3-6
+			if (hpPotion > 0) {
+				--hpPotion;
+				stat[0] += 20;
+			}
+			else {
+				cout << "포션 부족" << endl;
+			}
+			break;
+		case 2: //3-5 MP포션 사용 (20 회복) + 3-6
+			if (mpPotion > 0) {
+				--mpPotion;
+				stat[1] += 20;
+			}
+			break;
+		case 3: stat[2] *= 2; break; //3-7 공격력 2배 
+ 		case 4: stat[3] *= 2; break; //3-8 방어력 2배
+		case 5: printStatus(name, stat); break; //3-9 현재 능력치 출력
+		}
+	}
 		
 	return 0;
 }
