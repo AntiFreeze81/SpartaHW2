@@ -1,8 +1,15 @@
 ﻿#include <iostream>
 #include <string>
 
+#include "Player.h"
+#include "Warrior.h"
+#include "Magician.h"
+#include "Thief.h"
+#include "Archer.h"
+
 using namespace std;
 
+/*
 class Player { //4-1 Player클래스 생성
 protected:
 	string name;
@@ -113,6 +120,7 @@ public:
 };
 
 class Archer : public Player {
+public:
 	Archer(string n, int h, int m, int p, int d) : Player(n, h, m, p, d) {
 		p += 30;
 		setJob("Archer");
@@ -123,9 +131,9 @@ class Archer : public Player {
 	}
 };
 
+*/
 
-//1-5 printStatus 함수 작성 후 호출, Player 클래스에 통합
-/*
+//1-5 printStatus 함수 작성 후 호출
 void printStatus(string name, int stat[]) {
 	cout << "======================================================" << endl;
 	cout << "     " << name << "의 현재 능력치" << endl;
@@ -134,7 +142,7 @@ void printStatus(string name, int stat[]) {
 	cout << "공격력: " << stat[2] << "    " << "방어력: " << stat[3] << endl;
 	cout << "======================================================" << endl;
 }
-*/
+
 
 int main() {
 	cout << "======================================================" << endl;
@@ -176,8 +184,7 @@ int main() {
 	}
 	cout << '\n';
 
-	//1-5 printStatsu 함수 작성 후 호출
-	//printStatus(name, stat);
+	printStatus(name, stat);
 
 	//3-1
 	int hpPotion = 5, mpPotion = 5;
@@ -217,17 +224,35 @@ int main() {
 				--mpPotion;
 				stat[1] += 20;
 			}
+			else {
+				cout << "포션 부족" << endl;
+			}
 			break;
 		case 3: stat[2] *= 2; break; //3-7 공격력 2배 
  		case 4: stat[3] *= 2; break; //3-8 방어력 2배
-		//case 5: printStatus(name, stat); break; //3-9 현재 능력치 출력
+		case 5: printStatus(name, stat); break; //3-9 현재 능력치 출력
 		}
 	}
-		
+
+	cout << "======================================================" << endl;
+
+	//player 생성
 	Player* player = nullptr;
-	player = new Magician(name, stat[0], stat[1], stat[2], stat[3]);
-	player->attack();
-	player->printStatus();
+	
+	//직업 입력 받기 
+	cout << name << "님, 직업을 선택해주세요!" << endl;
+	cout << "1. 전사  2. 마법사  3. 도적  4. 궁수" << endl;
+	cout << "선택: ";
+	cin >> choice;
+
+	switch (choice) {
+	case 1:	player = new Warrior(name, stat[0], stat[1], stat[2], stat[3]); break;
+	case 2:	player = new Magician(name, stat[0], stat[1], stat[2], stat[3]); break;
+	case 3:	player = new Thief(name, stat[0], stat[1], stat[2], stat[3]); break;
+	case 4:	player = new Archer(name, stat[0], stat[1], stat[2], stat[3]); break;
+	}
+
+	player->printPlayerStatus();
 	
 	delete player;
 
