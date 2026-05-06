@@ -12,7 +12,6 @@
 #include "Thief.h"
 #include "Archer.h"
 #include "Monster.h"
-//#include "Slime.h"
 
 using namespace std;
 
@@ -278,8 +277,7 @@ int main() {
 				cout << " -> " << encounteredMonster->getName() << "의 " << encounteredMonster->getDropItemName() << " 획득!" << endl;
 
 				Item droppedItem = {encounteredMonster->getDropItemName(), encounteredMonster->getDropItemPrice()};
-				//droppedItem.name = encounteredMonster->getDropItemName();
-				//droppedItem.price = encounteredMonster->getDropItemPrice();
+
 				inventory.push_back(droppedItem);
 			}
 			else {

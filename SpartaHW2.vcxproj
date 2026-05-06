@@ -133,7 +133,6 @@
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Player.h" />
-    <ClCompile Include="Slime.cpp" />
     <ClCompile Include="SpartaHW2.cpp" />
     <ClCompile Include="Thief.cpp" />
     <ClCompile Include="Warrior.cpp" />
@@ -143,7 +142,6 @@
     <ClInclude Include="Goblin.h" />
     <ClInclude Include="Magician.h" />
     <ClInclude Include="Monster.h" />
-    <ClInclude Include="Slime.h" />
     <ClInclude Include="Thief.h" />
     <ClInclude Include="Warrior.h" />
   </ItemGroup>
