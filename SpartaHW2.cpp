@@ -2,6 +2,9 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <ctime>
+#include <cstdlib>
+
 
 #include "Player.h"
 #include "Warrior.h"
@@ -9,7 +12,7 @@
 #include "Thief.h"
 #include "Archer.h"
 #include "Monster.h"
-#include "Slime.h"
+//#include "Slime.h"
 
 using namespace std;
 
@@ -22,131 +25,17 @@ struct Item{
 	}
 };
 
-
-
-/*
-class Player { //4-1 Player클래스 생성
-protected:
+struct PotionRecipe {
 	string name;
-	string job = "None";
-	int level = 1;
-	int hp;
-	int mp;
-	int power;
-	int defence;
-
-public:
-	Player(string n, int h, int m, int p, int d) : name(n), hp(h), mp(m), power(p), defence(d) {} //4-2, 4-3
-	
-	//4-5 getter
-	string getName() {
-		return name;
-	}
-	string getJob() {
-		return job;
-	}
-	int getLevel() {
-		return level;
-	}
-	int getHp() {
-		return hp;
-	}
-	int getMp() {
-		return mp;
-	}
-	int getPower() {
-		return power;
-	}
-	int getDefence() {
-		return defence;
-	}
-
-	//4-5 setter
-	void setName(string name) {
-		this->name = name;
-	}
-	void setJob(string job) {
-		this->job = job; 
-	} 
-	void setLevel(int level) {
-		this->level = level;
-	}
-	void setHp(int hp) {
-		this->hp = hp;
-	}
-	void setMp(int mp) {
-		this->mp = mp;
-	}
-	void setPower(int power) {
-		this->power = power;
-	}
-	void setDefence(int defence) {
-		this->defence = defence;
-	}
-
-	virtual void attack() = 0; //4-6
-	
-	void printStatus() {
-		cout << "======================================================" << endl;
-		cout << "     " << name << "의 현재 능력치" << endl;
-		cout << "======================================================" << endl;
-		cout << "HP: " << hp << "     " << "MP: " << mp << endl;
-		cout << "공격력: " << power << "    " << "방어력: " << defence << endl;
-		cout << "======================================================" << endl;
-	}
-
-	virtual ~Player() {} //4-7
+	pair<string, int> ingredient1;
+	pair<string, int> ingredient2;
 };
 
-class Warrior : public Player {
-public:
-	Warrior(string n, int h, int m, int p, int d) : Player(n, h, m, p, d) {
-		hp += 30;
-		setJob("Warrior");
-	}
 
-	void attack() override {
-		cout << "파워 어택!" << endl;
-	}
-};
 
-class Magician : public Player {
-public:
-	Magician(string n, int h, int m, int p, int d) : Player(n, h, m, p, d) {
-		mp += 30;
-		setJob("Magician");
-	}
-
-	void attack() override {
-		cout << "썬더 볼트!" << endl;
-	}
-};
-
-class Thief : public Player {
-public:
-	Thief(string n, int h, int m, int p, int d) : Player(n, h, m, p, d) {
-		p += 30;
-		setJob("Thief");
-	}
-
-	void attack() override {
-		cout << "더블 슬래시!" << endl;
-	}
-};
-
-class Archer : public Player {
-public:
-	Archer(string n, int h, int m, int p, int d) : Player(n, h, m, p, d) {
-		p += 30;
-		setJob("Archer");
-	}
-
-	void attack() override {
-		cout << "화살 발사!" << endl;
-	}
-};
-
-*/
+//전역변수 아이템레시피
+//포션 레시피 생성
+vector<PotionRecipe> potionRecipes;
 
 //1-5 printStatus 함수 작성 후 호출
 void printStatus(string name, int stat[]) {
@@ -157,6 +46,51 @@ void printStatus(string name, int stat[]) {
 	cout << "공격력: " << stat[2] << "    " << "방어력: " << stat[3] << endl;
 	cout << "======================================================" << endl;
 }
+
+void ShowAllRecipes() {
+	for (PotionRecipe rp : potionRecipes) {
+		cout << "-> " << rp.name << " (" << rp.ingredient1.first << " x" << rp.ingredient1.second;
+		if (rp.ingredient2.second != 0) {
+			cout << ", " << rp.ingredient2.first << " x" << rp.ingredient2.second;
+		}
+		cout << ")" << endl;
+	}
+}
+
+void SearchByName(string name) {
+	for (PotionRecipe rp : potionRecipes) {
+		if (rp.name == name) {
+			cout << "-> " << rp.name << " (" << rp.ingredient1.first << " x" << rp.ingredient1.second;
+			if (rp.ingredient2.second != 0) {
+				cout << ", " << rp.ingredient2.first << " x" << rp.ingredient2.second;
+			}
+			cout << ")" << endl;
+			cout << endl;
+			return;
+		}
+	}
+	cout << "찾을 수 없습니다." << endl;
+	cout << endl;
+}
+
+void SearchByIngredient(string ingredient) {
+	bool isSearched = false; //찾았는지 못찾았는지 판단하는 플래그
+
+	for (PotionRecipe rp : potionRecipes) {
+		if (rp.ingredient1.first == ingredient || rp.ingredient2.first == ingredient) {
+			cout << "-> " << rp.name << " (" << rp.ingredient1.first << " x" << rp.ingredient1.second;
+			if (rp.ingredient2.second != 0) {
+				cout << ", " << rp.ingredient2.first << " x" << rp.ingredient2.second;
+			}
+			cout << ")" << endl;
+			isSearched = true;
+		}
+	}
+	if(!isSearched) cout << "찾을 수 없습니다." << endl;
+	cout << endl;
+}
+
+
 
 
 int main() {
@@ -276,6 +210,11 @@ int main() {
 	//인벤토리 생성
 	vector<Item> inventory;
 
+	//포션 레시피 추가
+	potionRecipes.push_back(PotionRecipe{ "HP포션", make_pair("허브", 1), make_pair("맑은물", 1) });
+	potionRecipes.push_back(PotionRecipe{ "스태미나포션", make_pair("허브", 1), make_pair("베리", 1) });
+	potionRecipes.push_back(PotionRecipe{ "쓸모없는 잡템", make_pair("끈적이는 액체", 2), make_pair("None", 0) });
+
 	//게임 상태 확인 플래그
 	bool isGameOver = false;
 
@@ -284,6 +223,7 @@ int main() {
 		cout << "=== 메인 메뉴 ===" << endl;
 		cout << "1. 던전 입장" << endl;
 		cout << "2. 인벤토리 확인" << endl;
+		cout << "3. 포션 제작소" << endl;
 		cout << "0. 게임 종료" << endl << endl;
 		cout << "선택: ";
 		cin >> choice;
@@ -292,29 +232,41 @@ int main() {
 		case 1:
 		{
 			//기본 몬스터(슬라임) 생성 기본값(HP 30, 공격력 20, 방어력 10)
-			Monster* slime = new Slime("더러운 슬라임", 3000, 51, 49, "끈적이는 젤리", 120);
+			Monster* encounteredMonster = nullptr;
+			//랜덤한 몬스터 출현을 위한 몬스터 랜덤
+			srand(time(NULL));
+			int randMonster = rand() % 5 + 1;
+
+			switch (randMonster) {
+			//Monster(std::string n, int h, int p, int d, std::string din, int dip)
+			case 1: encounteredMonster = new Monster("더러운 슬라임", 30, 20, 10, "끈적이는 젤리", 120); break;
+			case 2: encounteredMonster = new Monster("냄새나는 고블린", 40, 25, 20, "은화", 300); break;
+			case 3: encounteredMonster = new Monster("이상한 다크엘프", 70, 40, 33, "맑은물", 150); break;
+			case 4: encounteredMonster = new Monster("덩치 큰 오우거", 100, 55, 60, "허브", 170); break;
+			case 5: encounteredMonster = new Monster("작은 요들", 40, 30, 10, "베리", 100); break;
+			}
 
 			//임시 몬스터 출현 출력
-			cout << "야생의 " << slime->getName() << "이 나타났다!" << endl;
+			cout << "야생의 " << encounteredMonster->getName() << "이 나타났다!" << endl;
 			cout << "======================================================";
 
 			//플레이어턴 판별을 위한 플래그 생성
 			bool isPlayerTurn = true;
 
 			//전투를 위한 반복문
-			while (player->getHp() > 0 && slime->getHp() > 0) {
+			while (player->getHp() > 0 && encounteredMonster->getHp() > 0) {
 				cout << endl;
 				if (isPlayerTurn) {
 					cout << "--- 플레이어 턴 ---" << endl;
 					player->attack();
-					cout << slime->getName() << "에게 " << max(1, player->getPower() - slime->getDefence()) << " 데미지!" << endl;
-					cout << slime->getName() << " HP: " << slime->getHp() << " -> " << slime->getHp() - max(1, player->getPower() - slime->getDefence());
-					slime->setHp(slime->getHp() - max(1, player->getPower() - slime->getDefence()));
+					cout << encounteredMonster->getName() << "에게 " << max(1, player->getPower() - encounteredMonster->getDefence()) << " 데미지!" << endl;
+					cout << encounteredMonster->getName() << " HP: " << encounteredMonster->getHp() << " -> " << encounteredMonster->getHp() - max(1, player->getPower() - encounteredMonster->getDefence());
+					encounteredMonster->setHp(encounteredMonster->getHp() - max(1, player->getPower() - encounteredMonster->getDefence()));
 					isPlayerTurn = false;
 				}
 				else {
-					cout << "--- " << slime->getName() << " 턴 ---" << endl;
-					slime->attack(player);
+					cout << "--- " << encounteredMonster->getName() << " 턴 ---" << endl;
+					encounteredMonster->attack(player);
 
 					isPlayerTurn = true;
 				}
@@ -323,21 +275,21 @@ int main() {
 			if (player->getHp() > 0) {
 				cout << " (사망)" << endl << endl;
 				cout << "★ 전투 승리!" << endl;
-				cout << " -> 슬라임의 끈적한 젤리 획득!" << endl;
+				cout << " -> " << encounteredMonster->getName() << "의 " << encounteredMonster->getDropItemName() << " 획득!" << endl;
 
-				Item droppedItem;
-				droppedItem.name = slime->getDropItemName();
-				droppedItem.price = slime->getDropItemPrice();
+				Item droppedItem = {encounteredMonster->getDropItemName(), encounteredMonster->getDropItemPrice()};
+				//droppedItem.name = encounteredMonster->getDropItemName();
+				//droppedItem.price = encounteredMonster->getDropItemPrice();
 				inventory.push_back(droppedItem);
 			}
 			else {
 				cout << " (사망)" << endl << endl;
 				cout << "전투 패배..." << endl;
-				cout << slime->getName() << "과(와)의 전투에서 패배하였습니다." << endl;
+				cout << encounteredMonster->getName() << "과(와)의 전투에서 패배하였습니다." << endl;
 			}
 
 
-			delete slime;
+			delete encounteredMonster;
 		}
 			break;
 		case 2: //인벤토리 선택
@@ -346,11 +298,65 @@ int main() {
 			for (Item item : inventory) {
 				cout << i << ". ";
 				item.PrintInfo();
+				++i;
 			}
+			i = 1;
+			break;
+		}
+		case 3: //포션 제작소
+		{
+			int choicePotionMenu; //포션 제작소를 위한 선택 변수
+			bool isMakePotion = true;
+			do {
+				cout << "=== 포션 제작소 ===" << endl;
+				cout << "1. 전체 레시피 보기" << endl;
+				cout << "2. 포션 이름으로 검색" << endl;
+				cout << "3. 재료로 검색" << endl;
+				cout << "0. 돌아가기" << endl << endl;
+				cout << "선택: ";
+
+				cin >> choicePotionMenu;
+
+				switch (choicePotionMenu) {
+				case 1: ShowAllRecipes(); break; //모든 포션 레시피 출력
+				case 2: //이름으로 포션레시피 검색
+				{
+					cout << "검색할 포션 이름: ";
+					string tmpRecipe;
+
+					//입력버퍼 비우기
+					cin.ignore();
+
+					getline(cin, tmpRecipe);
+					SearchByName(tmpRecipe);
+					break;
+				}
+				case 3: //재료로 포션레시피 검색
+				{
+					cout << "검색할 재료: ";
+					string tmpIngredient;
+
+					//입력버퍼 비우기
+					cin.ignore();
+
+					getline(cin, tmpIngredient);
+					SearchByIngredient(tmpIngredient);
+					break;
+				}
+				case 0:
+				{
+					isMakePotion = false;
+					break;
+				}
+				}
+			} while (isMakePotion);
 			break;
 		}
 		case 0:
 			isGameOver = true;
+			cout << "게임을 즐겨주셔서 감사합니다!" << endl;
+			cout << "made by AntiFreeze81" << endl;
+			break;
 		}
 	} while (!isGameOver);
 

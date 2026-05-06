@@ -34,10 +34,10 @@ public:
 	void setDropItemPrice(int dropItemPrice);
 
 
-	virtual void attack(Player* player) = 0;
+	void attack(Player* player);
 
-	//가상 소멸자
-	virtual ~Monster() {}
+	//가상 소멸자 (자식 클래스 상속 제외)
+	//virtual ~Monster() {}
 };
 
 

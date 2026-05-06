@@ -3,7 +3,7 @@
 #include <iostream>
 
 Archer::Archer(std::string n, int h, int m, int p, int d) :
-	Player::Player(n, h, m, p, d) {
+	Player(n, h, m, p, d) {
 	power += 30;
 	setJob("±Ã¼ö");
 }

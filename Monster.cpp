@@ -1,5 +1,7 @@
 #include "Monster.h"
 
+#include <iostream>
+
 Monster::Monster(std::string n, int h, int p, int d, std::string din, int dip) :
 	name(n), hp(h), power(p), defence(d), dropItemName(din), dropItemPrice(dip) {}
 
@@ -51,4 +53,11 @@ void Monster::setDropItemName(std::string dropItemName) {
 
 void Monster::setDropItemPrice(int dropItemPrice) {
 	this->dropItemPrice = dropItemPrice;
+}
+
+void Monster::attack(Player* player) {
+	std::cout << name << "의 공격!" << std::endl;
+	std::cout << player->getName() << "에게 " << std::max(1, power - player->getDefence()) << "의 데미지!" << std::endl;
+	std::cout << player->getName() << " HP: " << player->getHp() << " -> " << player->getHp() - std::max(1, power - player->getDefence());
+	player->setHp(player->getHp() - std::max(1, power - player->getDefence()));
 }

@@ -9,7 +9,7 @@ class Slime : public Monster {
 public:
 	Slime(std::string n, int h, int p, int d, std::string din, int dip);
 	
-	void attack(Player* player) override;
+	//void attack(Player* player) override;
 };
 
 

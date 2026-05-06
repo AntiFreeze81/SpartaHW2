@@ -3,7 +3,7 @@
 #include <iostream>
 
 Magician::Magician(std::string n, int h, int m, int p, int d) :
-	Player::Player(n, h, m, p, d) {
+	Player(n, h, m, p, d) {
 	mp += 30;
 	setJob("¸¶¹ý»ç");
 }
