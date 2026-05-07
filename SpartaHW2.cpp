@@ -264,10 +264,7 @@ int main() {
 				cout << endl;
 				if (isPlayerTurn) {
 					cout << "--- 플레이어 턴 ---" << endl;
-					player->attack();
-					cout << encounteredMonster->getName() << "에게 " << max(1, player->getPower() - encounteredMonster->getDefence()) << " 데미지!" << endl;
-					cout << encounteredMonster->getName() << " HP: " << encounteredMonster->getHp() << " -> " << encounteredMonster->getHp() - max(1, player->getPower() - encounteredMonster->getDefence());
-					encounteredMonster->setHp(encounteredMonster->getHp() - max(1, player->getPower() - encounteredMonster->getDefence()));
+					player->attack(encounteredMonster);
 					isPlayerTurn = false;
 				}
 				else {

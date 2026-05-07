@@ -2,6 +2,8 @@
 #define PLAYER_H_
 #include <string>
 
+class Monster; //순환 참조 방지를 위한 Monster클래스 전방참조
+
 class Player {
 protected:
 	std::string name;
@@ -40,7 +42,7 @@ public:
 	void setMaxExp(int maxExp);
 
 	//공격하는 함수
-	virtual void attack() = 0; //4-6
+	virtual void attack(Monster* monster) = 0; //4-6
 
 	//플레이어 스테이터스 출력
 	void printPlayerStatus();
