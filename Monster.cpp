@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-Monster::Monster(std::string n, int h, int p, int d, std::string din, int dip) :
-	name(n), hp(h), power(p), defence(d), dropItemName(din), dropItemPrice(dip) {}
+Monster::Monster(std::string n, int h, int p, int d, std::string din, int dip, int exp) :
+	name(n), hp(h), power(p), defence(d), dropItemName(din), dropItemPrice(dip), expReward(exp) {}
 
 //getter
 std::string Monster::getName() {
@@ -30,6 +30,10 @@ int Monster::getDropItemPrice() {
 	return dropItemPrice;
 }
 
+int Monster::getExpReward() {
+	return expReward;
+}
+
 //setter
 void Monster::setName(std::string name) {
 	this->name = name;
@@ -53,6 +57,10 @@ void Monster::setDropItemName(std::string dropItemName) {
 
 void Monster::setDropItemPrice(int dropItemPrice) {
 	this->dropItemPrice = dropItemPrice;
+}
+
+void Monster::setExpReward(int expReward) {
+	this->expReward = expReward;
 }
 
 void Monster::attack(Player* player) {

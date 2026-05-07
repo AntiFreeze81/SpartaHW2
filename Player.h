@@ -6,11 +6,13 @@ class Player {
 protected:
 	std::string name;
 	std::string job = "None";
-	int level = 1;
 	int hp;
 	int mp;
 	int power;
 	int defence;
+	int level = 1;
+	int exp = 0;
+	int maxExp = 100;
 
 public:
 	Player(std::string n, int h, int m, int p, int d);
@@ -23,6 +25,8 @@ public:
 	int getMp();
 	int getPower();
 	int getDefence();
+	int getExp();
+	int getMaxExp();
 
 	//setter
 	void setName(std::string name);
@@ -32,6 +36,8 @@ public:
 	void setMp(int mp);
 	void setPower(int power);
 	void setDefence(int defence);
+	void setExp(int exp);
+	void setMaxExp(int maxExp);
 
 	//공격하는 함수
 	virtual void attack() = 0; //4-6

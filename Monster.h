@@ -13,9 +13,10 @@ protected:
 	int defence;
 	std::string dropItemName;
 	int dropItemPrice;
+	int expReward; //경험치를 위한 변수
 
 public:
-	Monster(std::string n, int h, int p, int d, std::string din, int dip);
+	Monster(std::string n, int h, int p, int d, std::string din, int dip, int exp);
 
 	//getter
 	std::string getName();
@@ -24,6 +25,7 @@ public:
 	int getDefence();
 	std::string getDropItemName();
 	int getDropItemPrice();
+	int getExpReward();
 
 	//setter
 	void setName(std::string name);
@@ -32,12 +34,9 @@ public:
 	void setDefence(int defence);
 	void setDropItemName(std::string dropItemName);
 	void setDropItemPrice(int dropItemPrice);
-
+	void setExpReward(int expReward);
 
 	void attack(Player* player);
-
-	//가상 소멸자 (자식 클래스 상속 제외)
-	//virtual ~Monster() {}
 };
 
 

@@ -26,7 +26,12 @@ int Player::getPower() {
 int Player::getDefence() {
 	return defence;
 }
-
+int Player::getExp() {
+	return exp;
+}
+int Player::getMaxExp() {
+	return maxExp;
+}
 
 void Player::setName(std::string name) {
 	this->name = name;
@@ -49,8 +54,14 @@ void Player::setPower(int power) {
 void Player::setDefence(int defence) {
 	this->defence = defence;
 }
+void Player::setExp(int exp) {
+	this->exp = exp;
+}
+void Player::setMaxExp(int maxExp) {
+	this->maxExp = maxExp;
+}
 
 void Player::printPlayerStatus() {
-	std::cout << "닉네임: " << name << " | 직업: " << job << " | Lv." << level << std::endl;
+	std::cout << "닉네임: " << name << " | 직업: " << job << " | Lv." << level << " | 경험치: " << exp << std::endl;
 	std::cout << "HP: " << hp << " | MP: " << mp << " | 공격력: " << power << " | 방어력: " << defence << std::endl;
 }

@@ -89,6 +89,10 @@ void SearchByIngredient(string ingredient) {
 	cout << endl;
 }
 
+void setPotion(int count, int* p_HPPotion, int* p_MPPotion) {
+	*p_HPPotion = count;
+	*p_MPPotion = count;
+}
 
 
 
@@ -135,8 +139,11 @@ int main() {
 	printStatus(name, stat);
 
 	//3-1
-	int hpPotion = 5, mpPotion = 5;
-	cout << "* HP포션 5개, MP 포션 5개가 기본 지급되었습니다." << endl;
+	int hpPotion, mpPotion; //mp포션, hp포션 선언
+	int countPotions = 5; //포션 개수 정하기
+	setPotion(countPotions, &hpPotion, &mpPotion);
+	cout << "* HP포션 "<< countPotions <<"개, MP 포션 " << countPotions << "개가 기본 지급되었습니다." << endl;
+
 
 	cout << "======================================================" << endl;
 
@@ -238,15 +245,15 @@ int main() {
 
 			switch (randMonster) {
 			//Monster(std::string n, int h, int p, int d, std::string din, int dip)
-			case 1: encounteredMonster = new Monster("더러운 슬라임", 30, 20, 10, "끈적이는 젤리", 120); break;
-			case 2: encounteredMonster = new Monster("냄새나는 고블린", 40, 25, 20, "은화", 300); break;
-			case 3: encounteredMonster = new Monster("이상한 다크엘프", 70, 40, 33, "맑은물", 150); break;
-			case 4: encounteredMonster = new Monster("덩치 큰 오우거", 100, 55, 60, "허브", 170); break;
-			case 5: encounteredMonster = new Monster("작은 요들", 40, 30, 10, "베리", 100); break;
+			case 1: encounteredMonster = new Monster("더러운 슬라임", 30, 20, 10, "끈적이는 젤리", 120, 10); break;
+			case 2: encounteredMonster = new Monster("냄새나는 고블린", 40, 25, 20, "은화", 300, 15); break;
+			case 3: encounteredMonster = new Monster("이상한 다크엘프", 70, 40, 33, "맑은물", 150, 23); break;
+			case 4: encounteredMonster = new Monster("덩치 큰 오우거", 100, 55, 60, "허브", 170, 30); break;
+			case 5: encounteredMonster = new Monster("작은 요들", 40, 30, 10, "베리", 100, 20); break;
 			}
 
 			//임시 몬스터 출현 출력
-			cout << "야생의 " << encounteredMonster->getName() << "이 나타났다!" << endl;
+			cout << "야생의 " << encounteredMonster->getName() << "이(가) 나타났다!" << endl;
 			cout << "======================================================";
 
 			//플레이어턴 판별을 위한 플래그 생성
@@ -279,6 +286,26 @@ int main() {
 				Item droppedItem = {encounteredMonster->getDropItemName(), encounteredMonster->getDropItemPrice()};
 
 				inventory.push_back(droppedItem);
+
+				//MaxExp이상 시 레벨업 + MaxExp 30증가, HP,MP,공격력 각각 10 5 5 증가
+				if (player->getExp() + encounteredMonster->getExpReward() >= player->getMaxExp()) {
+					player->setLevel(player->getLevel() + 1);
+					player->setExp(player->getExp() + encounteredMonster->getExpReward() - player->getMaxExp());
+					player->setMaxExp(player->getMaxExp() + 30);
+					player->setHp(player->getHp() + 10);
+					player->setMp(player->getMp() + 5);
+					player->setPower(player->getPower() + 5);
+
+					cout << "... 레벨업 조건 충족" << endl;
+					cout << " -> 레벨 업! Lv." << player->getLevel() - 1 << " -> Lv." << player->getLevel() << endl;
+					cout << " -> HP +10, MP +5, 공격력 +5 증가!" << endl;
+				}
+				else { //MaxExp보다 낮을시 경험치만 증가
+					player->setExp(player->getExp() + encounteredMonster->getExpReward());
+				}
+				
+				cout << " -> 경험치 +" << encounteredMonster->getExpReward() << " 획득! (현재 경험치: " << player->getExp() << ")" << endl << endl;
+
 			}
 			else {
 				cout << " (사망)" << endl << endl;
