@@ -61,11 +61,26 @@ public:
 		this->size_ = other.size_;
 		this->pItems_ = new T[other.capacity_];
 
-		for (int i = 0; i < size_; i++) {
+		for (int i = 0; i < this->size_; i++) {
 			this->pItems_[i] = other.pItems_[i];
 		}
 	}
 
+	//복사 대입 연산자
+	Inventory& operator = (const Inventory& other) {
+		if (this != &other) {
+			delete[] this->pItems_;
+
+			this->capacity_ = other.capacity_;
+			this->size_ = other.size_;
+			this->pItems_ = new T[other.capacity_];
+
+			for (int i = 0; i < this->size_; i++) {
+				this->pItems_[i] = other.pItems_[i];
+			}
+		}
+		return *this;
+	}
 
 };
 #endif
