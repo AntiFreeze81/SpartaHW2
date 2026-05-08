@@ -12,6 +12,7 @@
 #include "Thief.h"
 #include "Archer.h"
 #include "Monster.h"
+#include "Inventory.hpp"
 
 using namespace std;
 
@@ -93,6 +94,43 @@ void setPotion(int count, int* p_HPPotion, int* p_MPPotion) {
 	*p_HPPotion = count;
 	*p_MPPotion = count;
 }
+
+//HP포션 사용을 위한 함수
+void useHpPotion(Player* player, int* p_HPPotion) { 
+	if (*p_HPPotion) {
+		(*p_HPPotion)--;
+		cout << "* HP 포션 사용! HP 50 회복 (" << player->getHp() << " -> " << min(player->getMaxHp(), player->getHp() + 50) << ")" << endl;
+		player->setHp(min(player->getMaxHp(), player->getHp() + 50));
+	}
+	else {
+		cout << "HP포션이 부족합니다." << endl;
+	}
+}
+
+//MP포션 사용을 위한 함수
+void useMpPotion(Player* player, int* p_MPPotion) {
+	if (*p_MPPotion) {
+		(*p_MPPotion)--;
+		cout << "* MP 포션 사용! MP 50 회복 (" << player->getMp() << " -> " << min(player->getMaxMp(), player->getMp() + 50) << ")" << endl;
+	}
+	else {
+		cout << "MP포션이 부족합니다." << endl;
+	}
+}
+
+//함수 사용시 오히려 효율 하락으로 임시 주석처리
+//소모된 아이템 삭제용 함수
+/*
+void useItemDelete(vector<Item>& inven, string itemName) {
+	for (int i = 0; i < inven.size(); i++) {
+		if (inven[i].name == itemName) {
+			inven.erase(inven.begin() + i);
+			return;
+		}
+	}
+}
+*/
+
 
 
 
@@ -215,10 +253,17 @@ int main() {
 
 	//인벤토리 생성
 	vector<Item> inventory;
+	for (int i = 0; i < hpPotion; i++) {
+		inventory.push_back({ "HP포션", 50 });
+	}
+	for (int i = 0; i < mpPotion; i++) {
+		inventory.push_back({ "MP포션", 50 });
+	}
 
 	//포션 레시피 추가
 	potionRecipes.push_back(PotionRecipe{ "HP포션", make_pair("허브", 1), make_pair("맑은물", 1) });
 	potionRecipes.push_back(PotionRecipe{ "스태미나포션", make_pair("허브", 1), make_pair("베리", 1) });
+	potionRecipes.push_back(PotionRecipe{ "MP포션", make_pair("베리", 1), make_pair("맑은물", 1) });
 	potionRecipes.push_back(PotionRecipe{ "쓸모없는 잡템", make_pair("끈적이는 액체", 2), make_pair("None", 0) });
 
 	//게임 상태 확인 플래그
@@ -258,13 +303,46 @@ int main() {
 
 			//플레이어턴 판별을 위한 플래그 생성
 			bool isPlayerTurn = true;
+			//플레이어 공격, 아이템 사용 선택을 위한 변수
+			int attackOrUseItem = 0;
 
 			//전투를 위한 반복문
 			while (player->getHp() > 0 && encounteredMonster->getHp() > 0) {
 				cout << endl;
 				if (isPlayerTurn) {
 					cout << "--- 플레이어 턴 ---" << endl;
-					player->attack(encounteredMonster);
+					cout << "1. 공격" << endl;
+					cout << "2. 아이템 사용" << endl;
+					cout << "선택: ";
+					cin >> attackOrUseItem;
+
+					switch (attackOrUseItem) {
+					case 1:
+					{
+						player->attack(encounteredMonster);
+						break;
+					}
+					case 2:
+						int selectUseItem;
+						cout << "[ 인벤토리 ]" << endl;
+						for (int i = 0; i < inventory.size(); i++) {
+							cout << i + 1 << ". ";
+							inventory[i].PrintInfo();
+						}
+
+						cout << "사용할 아이템 번호: ";
+						cin >> selectUseItem;
+
+						if (inventory[selectUseItem - 1].name == "HP포션") {
+							useHpPotion(player, &hpPotion);
+							inventory.erase(inventory.begin() + selectUseItem - 1);
+						}
+						else if (inventory[selectUseItem - 1].name == "MP포션") {
+							useMpPotion(player, &mpPotion);
+							inventory.erase(inventory.begin() + selectUseItem - 1);
+						}
+						break;
+					}
 					isPlayerTurn = false;
 				}
 				else {

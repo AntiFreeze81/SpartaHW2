@@ -2,8 +2,10 @@
 
 #include <iostream>
 
-Player::Player(std::string n, int h, int m, int p, int d) :
-	name(n), hp(h), mp(m), power(p), defence(d) {}
+Player::Player(std::string n, int h, int m, int p, int d) : name(n), hp(h), mp(m), power(p), defence(d) {
+	maxHp = hp;
+	maxMp = mp;
+}
 
 std::string Player::getName() {
 	return name;
@@ -31,6 +33,12 @@ int Player::getExp() {
 }
 int Player::getMaxExp() {
 	return maxExp;
+}
+int Player::getMaxHp() {
+	return maxHp;
+}
+int Player::getMaxMp() {
+	return maxMp;
 }
 
 void Player::setName(std::string name) {
@@ -60,6 +68,14 @@ void Player::setExp(int exp) {
 void Player::setMaxExp(int maxExp) {
 	this->maxExp = maxExp;
 }
+void Player::setMaxHp(int maxHp) {
+	this->maxHp = maxHp;
+}
+void Player::setMaxMp(int maxMp) {
+	this->maxMp = maxMp;
+}
+
+
 
 void Player::printPlayerStatus() {
 	std::cout << "닉네임: " << name << " | 직업: " << job << " | Lv." << level << " | 경험치: " << exp << std::endl;

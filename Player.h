@@ -15,6 +15,9 @@ protected:
 	int level = 1;
 	int exp = 0;
 	int maxExp = 100;
+	int maxHp;
+	int maxMp;
+
 
 public:
 	Player(std::string n, int h, int m, int p, int d);
@@ -29,6 +32,8 @@ public:
 	int getDefence();
 	int getExp();
 	int getMaxExp();
+	int getMaxHp();
+	int getMaxMp();
 
 	//setter
 	void setName(std::string name);
@@ -40,6 +45,8 @@ public:
 	void setDefence(int defence);
 	void setExp(int exp);
 	void setMaxExp(int maxExp);
+	void setMaxHp(int maxHp);
+	void setMaxMp(int maxMp);
 
 	//공격하는 함수
 	virtual void attack(Monster* monster) = 0; //4-6
