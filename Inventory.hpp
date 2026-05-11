@@ -3,6 +3,7 @@
 //템플릿 클래스를 위한 hpp파일
 
 #include <iostream>
+#include <algorithm>
 
 template<typename T>
 
@@ -18,6 +19,9 @@ public:
 	}
 
 	void AddItem(T item) {
+		if (capacity_ == size_) {
+			Resize(capacity_ * 2);
+		}
 		pItems_[size_] = item;
 		size_++;
 	}
@@ -43,7 +47,22 @@ public:
 			std::cout << "인벤토리가 비었습니다." << std::endl;
 		}
 	}
-	
+
+	void Resize(int newCapacity) {
+		capacity_ = newCapacity;
+
+		T* tmpItem = new T[newCapacity]; //새배열 임시할당
+
+		for (int i = 0; i < size_; i++) { //내용물 복사
+			tmpItem[i] = pItems_[i];
+		}
+
+		delete[] pItems_; //기존배열 할당해제
+
+		pItems_ = tmpItem; //임시배열을 기존 아이템 포인터에 대입
+	}
+
+	//getter
 	int GetSize() {
 		return size_;
 	}
